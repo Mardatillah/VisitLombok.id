@@ -3,929 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visit Lombok - Paradise Island in Indonesia 🌴</title>
+    <title>Visit Lombok - Real-Time Tourism Statistics Dashboard 🌴📊</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
-    <style>
-        /* === SUPER PREMIUM STYLING === */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
-
-        :root {
-            /* Premium Color Palette */
-            --ocean-deep: #1a5276;
-            --emerald: #27ae60;
-            --turquoise: #1abc9c;
-            --gold: #f39c12;
-            --coral: #e74c3c;
-            --lavender: #9b59b6;
-            
-            /* Neutral Colors */
-            --dark: #0f2d20;
-            --light: #f8f9fa;
-            --gray: #34495e;
-            
-            /* Premium Gradients */
-            --gradient-primary: linear-gradient(135deg, var(--ocean-deep), var(--emerald), var(--turquoise));
-            --gradient-gold: linear-gradient(135deg, var(--gold), #e67e22);
-            --gradient-sunset: linear-gradient(135deg, #e74c3c, #f39c12, #f1c40f);
-            
-            /* Glass Effects */
-            --glass: rgba(255, 255, 255, 0.08);
-            --glass-dark: rgba(15, 45, 32, 0.95);
-            --glass-light: rgba(255, 255, 255, 0.12);
-            
-            /* Theme Variables */
-            --bg-primary: #0f2d20;
-            --bg-secondary: #1a3c2e;
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.85);
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --shadow-glow: 0 8px 32px rgba(39, 174, 96, 0.15);
-        }
-
-        [data-theme="light"] {
-            --bg-primary: #f8f9fa;
-            --bg-secondary: #e9ecef;
-            --text-primary: #2c3e50;
-            --text-secondary: rgba(44, 62, 80, 0.8);
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --border-color: rgba(52, 152, 219, 0.2);
-            --glass: rgba(255, 255, 255, 0.7);
-            --glass-dark: rgba(255, 255, 255, 0.95);
-            --shadow-glow: 0 8px 32px rgba(52, 152, 219, 0.15);
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.7;
-            overflow-x: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Premium Background Effects */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(26, 82, 118, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(39, 174, 96, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(155, 89, 182, 0.08) 0%, transparent 50%);
-            z-index: -2;
-        }
-
-        /* Animated Background Particles */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            background: var(--turquoise);
-            border-radius: 50%;
-            opacity: 0.3;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        section {
-            padding: 100px 0;
-            position: relative;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 60px;
-            position: relative;
-        }
-
-        .section-title h2 {
-            font-size: 3.5rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: var(--gradient-primary);
-            border-radius: 2px;
-        }
-
-        .section-title p {
-            font-size: 1.3rem;
-            max-width: 700px;
-            margin: 0 auto;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* === SUPER PREMIUM COMPONENTS === */
-
-        /* Premium Theme Toggle */
-        .theme-toggle {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            z-index: 1001;
-            background: var(--glass-dark);
-            backdrop-filter: blur(20px);
-            border: 2px solid var(--border-color);
-            border-radius: 50px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 52px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow-glow);
-        }
-
-        .theme-toggle:hover {
-            transform: scale(1.1) rotate(15deg);
-            border-color: var(--turquoise);
-            box-shadow: 0 8px 25px rgba(26, 188, 156, 0.3);
-        }
-
-        .theme-toggle i {
-            font-size: 1.2rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            transition: all 0.4s ease;
-        }
-
-        /* Premium Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            padding: 16px 36px;
-            background: var(--gradient-primary);
-            color: white;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            font-size: 1rem;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient-gold);
-            transition: all 0.6s ease;
-            z-index: 1;
-        }
-
-        .btn:hover::before {
-            left: 0;
-        }
-
-        .btn span {
-            position: relative;
-            z-index: 2;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 12px 30px rgba(39, 174, 96, 0.4);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            border: 2px solid var(--turquoise);
-            color: var(--turquoise);
-            box-shadow: none;
-        }
-
-        .btn-secondary:hover {
-            background: var(--turquoise);
-            color: white;
-        }
-
-        .btn-small {
-            padding: 12px 28px;
-            font-size: 0.9rem;
-        }
-
-        /* Premium Header */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            background: var(--glass-dark);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        header.scrolled {
-            background: var(--glass-dark);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 0;
-        }
-
-        .logo {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: var(--text-primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .logo span {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .logo i {
-            font-size: 2.4rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 32px;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-primary);
-            font-weight: 600;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 8px 0;
-            font-size: 1rem;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient-primary);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .nav-links a:hover {
-            color: var(--turquoise);
-        }
-
-        .hamburger {
-            display: none;
-            cursor: pointer;
-            font-size: 1.6rem;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-
-        .hamburger:hover {
-            color: var(--turquoise);
-        }
-
-        /* Premium Hero Section */
-        .hero {
-            height: 100vh;
-            background: linear-gradient(135deg, 
-                rgba(15, 45, 32, 0.9) 0%, 
-                rgba(26, 82, 118, 0.8) 100%),
-                url('https://images.unsplash.com/photo-1559661175-2db6a6d82f20?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') no-repeat center center/cover;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%231abc9c' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
-            animation: backgroundShift 20s linear infinite;
-        }
-
-        @keyframes backgroundShift {
-            0% { transform: translateX(0) translateY(0); }
-            100% { transform: translateX(-100px) translateY(-100px); }
-        }
-
-        .hero-content {
-            max-width: 900px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero h1 {
-            font-size: 5.5rem;
-            margin-bottom: 24px;
-            font-weight: 900;
-            line-height: 1.1;
-            background: linear-gradient(135deg, #ffffff 0%, var(--turquoise) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .hero p {
-            font-size: 1.5rem;
-            margin-bottom: 48px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            font-weight: 300;
-        }
-
-        .hero-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
-
-        /* Premium Features Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 32px;
-            margin-top: 60px;
-        }
-
-        .feature-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 36px;
-            border: 1px solid var(--border-color);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient-primary);
-            opacity: 0.05;
-            transition: left 0.6s ease;
-        }
-
-        .feature-card:hover::before {
-            left: 0;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-12px) scale(1.02);
-            border-color: var(--turquoise);
-            box-shadow: 0 20px 40px rgba(39, 174, 96, 0.2);
-        }
-
-        .feature-icon {
-            font-size: 3.5rem;
-            margin-bottom: 24px;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.2) rotate(10deg);
-        }
-
-        .feature-card h3 {
-            font-size: 1.6rem;
-            margin-bottom: 16px;
-            color: var(--text-primary);
-            font-weight: 700;
-        }
-
-        .feature-card p {
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        /* Premium Weather Widget */
-        .weather-widget {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 24px;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .weather-widget:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .weather-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .weather-info {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            text-align: center;
-        }
-
-        .weather-item {
-            padding: 16px;
-            background: var(--glass-light);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .weather-item:hover {
-            transform: scale(1.05);
-            background: var(--glass);
-        }
-
-        .weather-item .value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-        }
-
-        .weather-item .label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-
-        /* Premium Destinations */
-        .destinations {
-            background: var(--bg-primary);
-            position: relative;
-        }
-
-        .destination-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 32px;
-        }
-
-        .destination-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            cursor: pointer;
-        }
-
-        .destination-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--gradient-primary);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: 1;
-        }
-
-        .destination-card:hover::before {
-            opacity: 0.1;
-        }
-
-        .destination-card:hover {
-            transform: translateY(-12px) scale(1.02);
-            border-color: var(--turquoise);
-            box-shadow: 0 25px 50px rgba(39, 174, 96, 0.25);
-        }
-
-        .destination-image {
-            height: 240px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .destination-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .destination-card:hover .destination-image img {
-            transform: scale(1.15);
-        }
-
-        .destination-info {
-            padding: 28px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .destination-info h3 {
-            font-size: 1.7rem;
-            margin-bottom: 12px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .destination-info p {
-            margin-bottom: 20px;
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .destination-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .rating {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .stars {
-            color: var(--gold);
-            font-size: 1.1rem;
-        }
-
-        .price {
-            font-weight: 800;
-            font-size: 1.3rem;
-            background: var(--gradient-gold);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .destination-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .detail-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .detail-item i {
-            color: var(--turquoise);
-            font-size: 1.1rem;
-        }
-
-        /* Premium Map Section */
-        .map-section {
-            padding: 100px 0;
-            background: var(--bg-primary);
-        }
-
-        .map-container {
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            height: 650px;
-            margin-bottom: 32px;
-            position: relative;
-            border: 2px solid var(--border-color);
-        }
-
-        #map {
-            height: 100%;
-            width: 100%;
-            border-radius: 22px;
-        }
-
-        .map-controls {
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            z-index: 1000;
-            background: var(--glass-dark);
-            backdrop-filter: blur(25px);
-            border-radius: 20px;
-            padding: 24px;
-            border: 1px solid var(--border-color);
-            width: 340px;
-            box-shadow: var(--shadow-glow);
-        }
-
-        /* Premium Footer */
-        footer {
-            background: var(--glass-dark);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border-color);
-            padding: 80px 0 30px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 48px;
-            margin-bottom: 48px;
-        }
-
-        .footer-column h3 {
-            font-size: 1.5rem;
-            margin-bottom: 24px;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 16px;
-            margin-top: 24px;
-        }
-
-        .social-links a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            background: var(--card-bg);
-            border-radius: 50%;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: 1px solid var(--border-color);
-            font-size: 1.2rem;
-        }
-
-        .social-links a:hover {
-            background: var(--gradient-primary);
-            transform: translateY(-3px) scale(1.1);
-            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.3);
-        }
-
-        /* === ANIMATIONS === */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .animate-on-scroll.animated {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: var(--turquoise);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* === RESPONSIVE DESIGN === */
-        @media (max-width: 1024px) {
-            .hero h1 {
-                font-size: 4.5rem;
-            }
-            
-            .section-title h2 {
-                font-size: 3rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                position: fixed;
-                top: 80px;
-                left: -100%;
-                width: 100%;
-                height: calc(100vh - 80px);
-                background: var(--glass-dark);
-                backdrop-filter: blur(25px);
-                flex-direction: column;
-                align-items: center;
-                justify-content: flex-start;
-                padding-top: 60px;
-                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                gap: 24px;
-            }
-            
-            .nav-links.active {
-                left: 0;
-            }
-            
-            .hamburger {
-                display: block;
-            }
-            
-            .hero h1 {
-                font-size: 3.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.3rem;
-            }
-            
-            .section-title h2 {
-                font-size: 2.5rem;
-            }
-            
-            .map-controls {
-                position: relative;
-                top: 0;
-                right: 0;
-                width: 100%;
-                margin-bottom: 20px;
-            }
-            
-            .destination-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 2.8rem;
-            }
-            
-            .hero-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .btn {
-                width: 100%;
-                max-width: 300px;
-            }
-            
-            .container {
-                padding: 0 20px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="dark">
     <!-- Animated Background Particles -->
     <div class="particles" id="particles"></div>
 
     <!-- Theme Toggle -->
-    <div class="theme-toggle" id="themeToggle">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
         <i class="fas fa-sun"></i>
-    </div>
+    </button>
+
+    <!-- Language Selector -->
+<div class="language-selector" id="languageSelector">
+    <i class="fas fa-globe"></i>
+    <select id="languageSelect">
+        <option value="id">🇮🇩 Bahasa Indonesia</option>
+        <option value="en">🇺🇸 English</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="ru">🇷🇺 Русский</option>
+    </select>
+</div>
 
     <!-- Premium Header -->
     <header id="header">
@@ -936,16 +41,17 @@
                     Visit<span>Lombok</span>
                 </a>
                 <ul class="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#features">Fitur</a></li>
-                    <li><a href="#destinations">Destinasi</a></li>
-                    <li><a href="#map-section">Peta</a></li>
-                    <li><a href="#reviews">Reviews</a></li>
-                    <li><a href="#contact">Kontak</a></li>
+                    <li><a href="#home" data-translate="nav_home">Home</a></li>
+                    <li><a href="#features" data-translate="nav_features">Fitur</a></li>
+                    <li><a href="#destinations" data-translate="nav_destinations">Destinasi</a></li>
+                    <li><a href="#statistics" data-translate="nav_stats">Statistik</a></li>
+                    <li><a href="#map-section" data-translate="nav_map">Peta Live</a></li>
+                    <li><a href="#reviews" data-translate="nav_reviews">Reviews</a></li>
+                    <li><a href="#contact" data-translate="nav_contact">Kontak</a></li>
                 </ul>
-                <div class="hamburger">
+                <button class="hamburger" aria-label="Toggle navigation menu">
                     <i class="fas fa-bars"></i>
-                </div>
+                </button>
             </nav>
         </div>
     </header>
@@ -954,16 +60,16 @@
     <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
-                <h1>Discover Lombok Paradise</h1>
-                <p>Experience the untouched beauty of pristine beaches, majestic mountains, and vibrant culture in Indonesia's hidden gem 🌴✨</p>
+                <h1 data-translate="hero_title">Lombok Live Dashboard</h1>
+                <p data-translate="hero_subtitle">Real-time tourism statistics with live crowd tracking. Plan smarter with our interactive heatmap! 🌴📊</p>
                 <div class="hero-buttons">
                     <a href="#destinations" class="btn">
                         <i class="fas fa-map-marked-alt"></i>
-                        <span>Explore Destinations</span>
+                        <span data-translate="hero_explore">Explore Destinations</span>
                     </a>
-                    <a href="#map-section" class="btn btn-secondary">
-                        <i class="fas fa-route"></i>
-                        <span>Plan Your Trip</span>
+                    <a href="#statistics" class="btn btn-secondary">
+                        <i class="fas fa-chart-line"></i>
+                        <span>View Live Statistics</span>
                     </a>
                 </div>
             </div>
@@ -974,36 +80,35 @@
     <section id="features" class="features-section">
         <div class="container">
             <div class="section-title">
-                <h2>Why Choose Lombok?</h2>
-                <p>Discover what makes Lombok the perfect destination for your next adventure</p>
+                <h2 data-translate="features_title">Real-Time Features</h2>
+                <p data-translate="features_subtitle">Smart tourism monitoring system for better travel planning</p>
             </div>
 
             <div class="features-grid">
                 <!-- Feature 1 -->
                 <div class="feature-card animate-on-scroll">
                     <div class="feature-icon">
-                        <i class="fas fa-umbrella-beach"></i>
+                        <i class="fas fa-users"></i>
                     </div>
-                    <h3>Pristine Beaches</h3>
-                    <p>Discover untouched white sand beaches with crystal clear turquoise waters perfect for swimming and snorkeling</p>
-                    <div class="weather-widget">
-                        <div class="weather-header">
-                            <h4>Beach Weather</h4>
-                            <i class="fas fa-sync-alt" id="refresh-weather"></i>
+                    <h3>Live Crowd Tracking</h3>
+                    <p>Real-time monitoring of visitor counts across 170+ destinations with color-coded heatmap visualization</p>
+                    <div class="traffic-legend" style="margin-top: 20px;">
+                        <h4>Traffic Levels:</h4>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--traffic-low);"></div>
+                            <span>Sepi (0-20 visitors)</span>
                         </div>
-                        <div class="weather-info">
-                            <div class="weather-item">
-                                <div class="value" id="weather-temp">28°C</div>
-                                <div class="label">Water Temp</div>
-                            </div>
-                            <div class="weather-item">
-                                <div class="value" id="weather-condition">Calm</div>
-                                <div class="label">Waves</div>
-                            </div>
-                            <div class="weather-item">
-                                <div class="value" id="weather-visibility">30m</div>
-                                <div class="label">Visibility</div>
-                            </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--traffic-medium);"></div>
+                            <span>Sedang (20-50)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--traffic-high);"></div>
+                            <span>Ramai (50-100)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--traffic-very-high);"></div>
+                            <span>Sangat Ramai (100+)</span>
                         </div>
                     </div>
                 </div>
@@ -1011,19 +116,19 @@
                 <!-- Feature 2 -->
                 <div class="feature-card animate-on-scroll">
                     <div class="feature-icon">
-                        <i class="fas fa-mountain"></i>
+                        <i class="fas fa-chart-bar"></i>
                     </div>
-                    <h3>Majestic Mountains</h3>
-                    <p>Conquer Mount Rinjani and experience breathtaking sunrise views from Indonesia's second highest volcano</p>
+                    <h3>Advanced Analytics</h3>
+                    <p>Comprehensive statistics dashboard with hourly trends, peak hours analysis, and visitor patterns</p>
                     <div class="feature-stats">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
                             <div style="text-align: center; padding: 15px; background: var(--glass); border-radius: 12px;">
-                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--turquoise);">3,726m</div>
-                                <div style="font-size: 0.9rem; color: var(--text-secondary);">Elevation</div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--neon-blue);">170+</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">Destinasi</div>
                             </div>
                             <div style="text-align: center; padding: 15px; background: var(--glass); border-radius: 12px;">
-                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--gold);">2-3 Days</div>
-                                <div style="font-size: 0.9rem; color: var(--text-secondary);">Trek Duration</div>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: var(--cyber-yellow);">30s</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">Update Real-time</div>
                             </div>
                         </div>
                     </div>
@@ -1032,23 +137,23 @@
                 <!-- Feature 3 -->
                 <div class="feature-card animate-on-scroll">
                     <div class="feature-icon">
-                        <i class="fas fa-water"></i>
+                        <i class="fas fa-bell"></i>
                     </div>
-                    <h3>Crystal Waterfalls</h3>
-                    <p>Explore hidden waterfalls with refreshing natural pools surrounded by lush tropical rainforest</p>
-                    <div class="waterfall-info">
+                    <h3>Smart Alerts</h3>
+                    <p>Get notifications for crowded destinations and discover nearby alternatives with better availability</p>
+                    <div class="alert-system">
                         <div style="margin-top: 20px;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                                <span style="color: var(--text-secondary);">Difficulty:</span>
-                                <span style="color: var(--turquoise); font-weight: 600;">Easy - Moderate</span>
+                                <span style="color: var(--text-secondary);">Peak Hours:</span>
+                                <span style="color: var(--neon-blue); font-weight: 600;">09:00 - 18:00</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                                <span style="color: var(--text-secondary);">Best Time:</span>
-                                <span style="color: var(--gold); font-weight: 600;">Dry Season</span>
+                                <span style="color: var(--text-secondary);">Best Visit Time:</span>
+                                <span style="color: var(--cyber-yellow); font-weight: 600;">Weekday Mornings</span>
                             </div>
                             <div style="display: flex; justify-content: space-between;">
-                                <span style="color: var(--text-secondary);">Swimming:</span>
-                                <span style="color: var(--emerald); font-weight: 600;">Allowed</span>
+                                <span style="color: var(--text-secondary);">Live Updates:</span>
+                                <span style="color: var(--acid-green); font-weight: 600;">Every 30s</span>
                             </div>
                         </div>
                     </div>
@@ -1061,14 +166,132 @@
     <section id="destinations" class="destinations">
         <div class="container">
             <div class="section-title">
-                <h2>Featured Destinations</h2>
-                <p>Explore the most breathtaking spots that Lombok has to offer</p>
+                <h2 data-translate="destinations_title">Featured Destinations</h2>
+                <p data-translate="destinations_subtitle">Explore the most breathtaking spots that Lombok has to offer</p>
             </div>
+
+            <!-- Search Bar -->
+            <input type="text" class="destination-search" id="destinationSearch" placeholder="🔍 Search destinations..." data-translate="search_placeholder">
+
+            <!-- Category Filter -->
+            <div class="category-filter" id="categoryFilter">
+                <button class="category-btn active" data-category="all">
+                    <i class="fas fa-globe-asia"></i>
+                    <span>All Destinations</span>
+                </button>
+                <button class="category-btn" data-category="lombok-tengah">
+                    <i class="fas fa-mountain"></i>
+                    <span>Lombok Tengah</span>
+                </button>
+                <button class="category-btn" data-category="lombok-barat">
+                    <i class="fas fa-umbrella-beach"></i>
+                    <span>Lombok Barat</span>
+                </button>
+                <button class="category-btn" data-category="lombok-timur">
+                    <i class="fas fa-water"></i>
+                    <span>Lombok Timur</span>
+                </button>
+                <button class="category-btn" data-category="lombok-utara">
+                    <i class="fas fa-ship"></i>
+                    <span>Lombok Utara</span>
+                </button>
+                <button class="category-btn" data-category="kota-mataram">
+                    <i class="fas fa-city"></i>
+                    <span>Kota Mataram</span>
+                </button>
+            </div>
+
             <div class="destination-grid" id="destination-grid">
-                <!-- Destinations will be loaded from Google Sheets -->
-                <div class="loading-destinations" style="text-align: center; padding: 60px; grid-column: 1/-1;">
-                    <div class="loading" style="width: 40px; height: 40px; border-width: 4px; margin: 0 auto 20px;"></div>
-                    <p style="color: var(--text-secondary);">Loading amazing destinations...</p>
+                <!-- Destinations will be loaded from JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- REAL-TIME STATISTICS DASHBOARD SECTION -->
+    <section id="statistics" class="statistics-section">
+        <div class="container">
+            <div class="section-title">
+                <h2><i class="fas fa-chart-line"></i> Real-time Destination Statistics</h2>
+                <p>Monitor crowd levels and visitor patterns across Lombok's top destinations</p>
+            </div>
+            
+            <div class="stats-controls">
+                <button id="refresh-stats" class="btn btn-small">
+                    <i class="fas fa-sync-alt"></i> Refresh Data
+                </button>
+                <select id="region-filter" class="category-btn" style="padding: 10px 20px;">
+                    <option value="all">All Regions</option>
+                    <option value="lombok-tengah">Central Lombok</option>
+                    <option value="lombok-barat">West Lombok</option>
+                    <option value="lombok-timur">East Lombok</option>
+                    <option value="lombok-utara">North Lombok</option>
+                    <option value="kota-mataram">Mataram City</option>
+                </select>
+                <select id="traffic-filter" class="category-btn" style="padding: 10px 20px;">
+                    <option value="all">All Traffic Levels</option>
+                    <option value="low">Sepi</option>
+                    <option value="medium">Sedang</option>
+                    <option value="high">Ramai</option>
+                    <option value="very-high">Sangat Ramai</option>
+                </select>
+            </div>
+            
+            <div class="stats-grid" id="stats-grid">
+                <!-- Stats cards will be loaded here -->
+            </div>
+            
+            <div class="stats-visualization" style="background: var(--card-bg); border-radius: 20px; padding: 30px; border: 1px solid var(--border-color);">
+                <h3 style="margin-bottom: 20px; color: var(--text-primary);">
+                    <i class="fas fa-map-marked-alt"></i> Live Traffic Heatmap
+                </h3>
+                <div class="traffic-summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-value" id="total-visitors">0</div>
+                        <div class="stat-label">Total Visitors Now</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="stat-value" id="avg-traffic">0</div>
+                        <div class="stat-label">Average Traffic</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-fire"></i></div>
+                        <div class="stat-value" id="most-crowded">-</div>
+                        <div class="stat-label">Most Crowded</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-leaf"></i></div>
+                        <div class="stat-value" id="least-crowded">-</div>
+                        <div class="stat-label">Least Crowded</div>
+                    </div>
+                </div>
+                
+                <div class="traffic-legend" style="background: var(--glass); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 10px; color: var(--neon-blue);">
+                        <i class="fas fa-info-circle"></i> Traffic Legend (Live Map)
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--traffic-low);"></div>
+                            <span style="color: var(--text-primary);">Sepi (0-20)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--traffic-medium);"></div>
+                            <span style="color: var(--text-primary);">Sedang (20-50)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--traffic-high);"></div>
+                            <span style="color: var(--text-primary);">Ramai (50-100)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--traffic-very-high);"></div>
+                            <span style="color: var(--text-primary);">Sangat Ramai (100+)</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-secondary);">
+                        <i class="fas fa-sync-alt"></i> Updates every 30 seconds
+                    </div>
                 </div>
             </div>
         </div>
@@ -1078,8 +301,8 @@
     <section id="map-section" class="map-section">
         <div class="container">
             <div class="section-title">
-                <h2>Interactive Map</h2>
-                <p>Navigate through Lombok's wonders and plan your perfect itinerary</p>
+                <h2 data-translate="map_title">Live Traffic Heatmap</h2>
+                <p data-translate="map_subtitle">Real-time crowd visualization with color-coded traffic levels</p>
             </div>
             
             <div class="map-container">
@@ -1087,7 +310,26 @@
                 
                 <div class="map-controls">
                     <div class="route-form">
-                        <h4 style="margin-bottom: 20px; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Plan Your Route</h4>
+                        <h4 style="margin-bottom: 20px; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            <i class="fas fa-route"></i> Plan Your Route
+                        </h4>
+                        
+                        <!-- Transport Mode Selector -->
+                        <div class="transport-modes">
+                            <div class="transport-mode active" data-mode="car">
+                                <i class="fas fa-car"></i>
+                                <span>Car</span>
+                            </div>
+                            <div class="transport-mode" data-mode="motorcycle">
+                                <i class="fas fa-motorcycle"></i>
+                                <span>Motor</span>
+                            </div>
+                            <div class="transport-mode" data-mode="bicycle">
+                                <i class="fas fa-bicycle"></i>
+                                <span>Bicycle</span>
+                            </div>
+                        </div>
+                        
                         <div class="form-group">
                             <label for="start-location"><i class="fas fa-location-arrow"></i> Start Location</label>
                             <input type="text" id="start-location" placeholder="Your current location" readonly
@@ -1107,7 +349,7 @@
                             </select>
                         </div>
                         
-                        <div class="route-actions">
+                        <div class="route-actions" style="display: flex; gap: 10px;">
                             <button class="btn btn-small" id="calculate-route" style="flex: 2;">
                                 <i class="fas fa-route"></i>
                                 <span>Get Directions</span>
@@ -1116,6 +358,28 @@
                                 <i class="fas fa-times"></i>
                                 <span>Clear</span>
                             </button>
+                        </div>
+                        
+                        <!-- Live Traffic Info -->
+                        <div class="route-dashboard" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                            <div class="dashboard-header">
+                                <h4><i class="fas fa-traffic-light"></i> Live Traffic Info</h4>
+                                <span id="traffic-update-time" style="font-size: 0.8rem; color: var(--text-secondary);">Just now</span>
+                            </div>
+                            
+                            <div class="dashboard-stats">
+                                <div class="stat-card" style="padding: 15px; background: var(--glass);">
+                                    <div class="stat-icon"><i class="fas fa-circle" style="color: var(--traffic-low);"></i></div>
+                                    <div class="stat-value" id="low-traffic-count">0</div>
+                                    <div class="stat-label">Sepi</div>
+                                </div>
+                                
+                                <div class="stat-card" style="padding: 15px; background: var(--glass);">
+                                    <div class="stat-icon"><i class="fas fa-circle" style="color: var(--traffic-high);"></i></div>
+                                    <div class="stat-value" id="high-traffic-count">0</div>
+                                    <div class="stat-label">Ramai</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1127,31 +391,31 @@
     <section id="reviews" class="reviews-section">
         <div class="container">
             <div class="section-title">
-                <h2>Traveler Experiences</h2>
-                <p>See what adventurers are saying about their Lombok journey</p>
+                <h2 data-translate="reviews_title">Traveler Experiences</h2>
+                <p data-translate="reviews_subtitle">See what adventurers are saying about their Lombok journey</p>
             </div>
             
             <div class="reviews-container">
                 <div class="review-form" style="background: var(--card-bg); padding: 40px; border-radius: 24px; border: 1px solid var(--border-color); margin-bottom: 40px;">
-                    <h3 style="margin-bottom: 30px; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Share Your Story</h3>
+                    <h3 style="margin-bottom: 30px; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" data-translate="reviews_share">Share Your Story</h3>
                     <form id="reviewForm">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                             <div>
-                                <label for="reviewer-name" style="display: block; margin-bottom: 8px; font-weight: 600;">Your Name</label>
+                                <label for="reviewer-name" style="display: block; margin-bottom: 8px; font-weight: 600;" data-translate="reviews_name">Your Name</label>
                                 <input type="text" id="reviewer-name" placeholder="Enter your name" required
                                        style="width: 100%; padding: 12px; background: var(--glass); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary);">
                             </div>
                             <div>
-                                <label for="destination-select" style="display: block; margin-bottom: 8px; font-weight: 600;">Destination</label>
+                                <label for="destination-select" style="display: block; margin-bottom: 8px; font-weight: 600;" data-translate="reviews_destination">Destination</label>
                                 <select id="destination-select" required
                                         style="width: 100%; padding: 12px; background: var(--glass); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary);">
-                                    <option value="">Choose destination...</option>
+                                    <option value="" data-translate="reviews_choose">Choose destination...</option>
                                 </select>
                             </div>
                         </div>
                         
                         <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Your Rating</label>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;" data-translate="reviews_rating">Your Rating</label>
                             <div class="star-rating" id="star-rating" style="display: flex; gap: 8px;">
                                 <span class="star" data-rating="1" style="font-size: 2rem; color: var(--border-color); cursor: pointer; transition: all 0.2s ease;">★</span>
                                 <span class="star" data-rating="2" style="font-size: 2rem; color: var(--border-color); cursor: pointer; transition: all 0.2s ease;">★</span>
@@ -1163,14 +427,14 @@
                         </div>
                         
                         <div style="margin-bottom: 25px;">
-                            <label for="review-text" style="display: block; margin-bottom: 8px; font-weight: 600;">Your Experience</label>
+                            <label for="review-text" style="display: block; margin-bottom: 8px; font-weight: 600;" data-translate="reviews_experience">Your Experience</label>
                             <textarea id="review-text" placeholder="Share your amazing experience in Lombok..." required
                                       style="width: 100%; padding: 12px; background: var(--glass); border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-primary); min-height: 120px; resize: vertical;"></textarea>
                         </div>
                         
                         <button type="submit" class="btn" style="width: 100%;">
                             <i class="fas fa-paper-plane"></i>
-                            <span>Share Your Experience</span>
+                            <span data-translate="reviews_submit">Share Your Experience</span>
                         </button>
                     </form>
                 </div>
@@ -1187,8 +451,8 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
-                    <h3>Visit Lombok</h3>
-                    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;">
+                    <h3 data-translate="footer_title">Visit Lombok</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 24px;" data-translate="footer_desc">
                         Your ultimate guide to exploring the natural wonders and cultural treasures of Lombok Island. 
                         Start your adventure today!
                     </p>
@@ -1201,1026 +465,48 @@
                 </div>
                 
                 <div class="footer-column">
-                    <h3>Quick Links</h3>
+                    <h3 data-translate="footer_links">Quick Links</h3>
                     <ul style="list-style: none;">
-                        <li style="margin-bottom: 12px;"><a href="#home" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease;">🏠 Home</a></li>
-                        <li style="margin-bottom: 12px;"><a href="#features" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease;">🚀 Features</a></li>
-                        <li style="margin-bottom: 12px;"><a href="#destinations" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease;">🌴 Destinations</a></li>
-                        <li style="margin-bottom: 12px;"><a href="#map-section" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease;">🗺️ Interactive Map</a></li>
-                        <li style="margin-bottom: 12px;"><a href="#reviews" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease;">⭐ Traveler Reviews</a></li>
+                        <li style="margin-bottom: 12px;"><a href="#home" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease;">🏠 <span data-translate="nav_home">Home</span></a></li>
+                        <li style="margin-bottom: 12px;"><a href="#features" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease;">🚀 <span data-translate="nav_features">Features</span></a></li>
+                        <li style="margin-bottom: 12px;"><a href="#destinations" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease;">🌴 <span data-translate="nav_destinations">Destinations</span></a></li>
+                        <li style="margin-bottom: 12px;"><a href="#statistics" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease;">📊 <span>Live Statistics</span></a></li>
+                        <li style="margin-bottom: 12px;"><a href="#map-section" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease;">🗺️ <span data-translate="nav_map">Live Traffic Map</span></a></li>
+                        <li style="margin-bottom: 12px;"><a href="#reviews" style="color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease;">⭐ <span data-translate="nav_reviews">Traveler Reviews</span></a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-column">
-                    <h3>Contact Info</h3>
+                    <h3 data-translate="footer_contact">Contact Info</h3>
                     <div style="color: var(--text-secondary); line-height: 1.8;">
-                        <p style="margin-bottom: 12px;"><i class="fas fa-phone" style="color: var(--turquoise); margin-right: 10px;"></i> +62 812-3456-7890</p>
-                        <p style="margin-bottom: 12px;"><i class="fas fa-envelope" style="color: var(--turquoise); margin-right: 10px;"></i> hello@visitlombok.com</p>
-                        <p style="margin-bottom: 12px;"><i class="fas fa-map-marker-alt" style="color: var(--turquoise); margin-right: 10px;"></i> Lombok, West Nusa Tenggara, Indonesia</p>
-                        <p><i class="fas fa-clock" style="color: var(--turquoise); margin-right: 10px;"></i> 24/7 Customer Support</p>
+                        <p style="margin-bottom: 12px;"><i class="fas fa-phone" style="color: var(--neon-blue); margin-right: 10px;"></i> +62 812-3456-7890</p>
+                        <p style="margin-bottom: 12px;"><i class="fas fa-envelope" style="color: var(--neon-blue); margin-right: 10px;"></i> hello@visitlombok.com</p>
+                        <p style="margin-bottom: 12px;"><i class="fas fa-map-marker-alt" style="color: var(--neon-blue); margin-right: 10px;"></i> Lombok, West Nusa Tenggara, Indonesia</p>
+                        <p><i class="fas fa-clock" style="color: var(--neon-blue); margin-right: 10px;"></i> <span data-translate="footer_support">24/7 Customer Support</span></p>
                     </div>
                 </div>
             </div>
             
             <div class="footer-bottom" style="text-align: center; padding-top: 30px; border-top: 1px solid var(--border-color); color: var(--text-secondary);">
-                <p>&copy; 2024 Visit Lombok. Crafted with ❤️ for adventure seekers. All rights reserved.</p>
+                <p>&copy; 2024 Visit Lombok. <span data-translate="footer_crafted">Crafted with ❤️ for adventure seekers.</span> <span data-translate="footer_rights">All rights reserved.</span></p>
+                <p style="margin-top: 10px; font-size: 0.9rem;">
+                    <i class="fas fa-sync-alt"></i> Live data updates every 30 seconds | 
+                    <i class="fas fa-map-marker-alt"></i> 170+ destinations monitored
+                </p>
             </div>
         </div>
     </footer>
 
+    <!-- External JavaScript Libraries -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
     
-    <script>
-        // ==================== DATA 170 TITIK WISATA LOMBOK ====================
-        const lombokDestinations = [
-            // Destinasi Lombok Tengah (1-51)
-            { id: 1, name: "Pantai Kuta Mandalika", lat: -8.893797615746463, lng: 116.28338487671442, category: "beach", price: "Rp10.000", hours: "06.00 – 18.00 WITA" },
-            { id: 2, name: "Pantai Tanjung Aan", lat: -8.908469108927415, lng: 116.32892113068577, category: "beach", price: "Rp10.000", hours: "06.00 – 18.00 WITA" },
-            { id: 3, name: "Bukit Merese", lat: -8.913606622568365, lng: 116.31898484232856, category: "mountain", price: "Rp5.000 – Rp10.000", hours: "06.00 – 18.00 WITA" },
-            { id: 4, name: "Pantai Selong Belanak", lat: -8.871911301721342, lng: 116.16243839999998, category: "beach", price: "Rp10.000", hours: "06.00 – 18.30 WITA" },
-            { id: 5, name: "Pantai Mawi", lat: -8.882123531859891, lng: 116.1599634, category: "beach", price: "Rp10.000", hours: "06.00 – 18.00 WITA" },
-            { id: 6, name: "Air Terjun Benang Stokel and Benang Kelambu", lat: -8.5327378329568, lng: 116.3413934288357, category: "waterfall", price: "Rp10.000 – Rp20.000", hours: "08.00 – 17.00 WITA" },
-            { id: 7, name: "Pantai Mawun", lat: -8.897234769866934, lng: 116.22922670318695, category: "beach", price: "Rp5.000", hours: "06.00 – 18.00 WITA" },
-            { id: 8, name: "Bukit Seger", lat: -8.907677609904608, lng: 116.29955127116426, category: "mountain", price: "Rp10.000", hours: "06.00 – 18.00 WITA" },
-            { id: 9, name: "Pantai Bloam Gerupuk", lat: -8.926668721791604, lng: 116.34951638650718, category: "beach", price: "Rp10.000", hours: "06.00 – 18.00 WITA" },
-            { id: 10, name: "Air Terjun Babak Pelangi", lat: -8.545673720205889, lng: 116.33188047116427, category: "waterfall", price: "Rp10.000", hours: "08.00 – 17.00 WITA" },
-            { id: 11, name: "Air Terjun Tenjong", lat: -8.687557653706621, lng: 116.31123861534289, category: "waterfall", price: "Rp10.000", hours: "08.00 – 17.00 WITA" },
-            { id: 12, name: "Air Terjun Benang Stokel and Benang Kelambu Waterfall", lat: -8.532759053118225, lng: 116.3413827, category: "waterfall", price: "Rp10.000 – Rp20.000", hours: "08.00 – 17.00 WITA" },
-            { id: 13, name: "Taman Hutan Raya Nuraksa", lat: -8.493952019691854, lng: 116.31208625223509, category: "nature", price: "Rp5.000", hours: "08.00 – 17.00 WITA" },
-            { id: 14, name: "Lembah Gaharu", lat: -8.554500413761435, lng: 116.30338172087573, category: "nature", price: "Rp10.000", hours: "07.00 – 17.00 WITA" },
-            { id: 15, name: "Danau Biru", lat: -8.528709380920608, lng: 116.3113554153429, category: "nature", price: "Rp5.000", hours: "07.00 – 17.30 WITA" },
-            { id: 16, name: "Air Terjun Elong Tune", lat: -8.551292042891138, lng: 116.32772116718188, category: "waterfall", price: "Rp10.000", hours: "08.00 – 17.00 WITA" },
-            { id: 17, name: "Air Terjun Babak Pelangi", lat: -8.545763894311984, lng: 116.33184827882455, category: "waterfall", price: "Rp10.000", hours: "08.00 – 17.00 WITA" },
-            { id: 18, name: "Bukit Tunak", lat: -8.911205325040449, lng: 116.38090322255856, category: "mountain", price: "Rp10.000", hours: "06.00 – 18.00 WITA" },
-            { id: 19, name: "Taman Wisata Alam Gunung Tunak", lat: -8.910991176420412, lng: 116.38097379720877, category: "nature", price: "Rp10.000", hours: "07.00 – 17.00 WITA" },
-            { id: 20, name: "Desa Wisata Hijau Bilebante", lat: -8.619563632566972, lng: 116.18647984224447, category: "culture", price: "Rp5.000 – Rp15.000", hours: "07.00 – 18.00 WITA" },
-            { id: 21, name: "Industri Tenun Patuh", lat: -8.693190467630352, lng: 116.22530317611749, category: "culture", price: "Gratis", hours: "08.00 – 17.00 WITA" },
-            { id: 22, name: "Desa Wisata Karang Sidemen", lat: -8.562957401410037, lng: 116.30961544232856, category: "culture", price: "Rp10.000", hours: "07.00 – 18.00 WITA" },
-            { id: 23, name: "Traditional Kampung Ende", lat: -8.82113756813316, lng: 116.29381161534288, category: "culture", price: "Rp10.000", hours: "07.00 – 18.00 WITA" },
-            { id: 24, name: "Pasar Bambu Bonjeruk", lat: -8.648123440678297, lng: 116.21230029786955, category: "culinary", price: "Rp10.000 – Rp30.000", hours: "06.00 – 17.00 WITA" },
-            { id: 25, name: "Lesehan Taliwang Cakra", lat: -8.702490991042371, lng: 116.26661021164281, category: "culinary", price: "Rp25.000 – Rp60.000", hours: "10.00 – 22.00 WITA" },
-            { id: 26, name: "Nasi Balap Puyung Inaq Esun", lat: -8.684634515591002, lng: 116.24284567301433, category: "culinary", price: "Rp20.000 – Rp40.000", hours: "07.00 – 21.00 WITA" },
-            { id: 27, name: "Pawon Sasak Tastura", lat: -8.704105576183055, lng: 116.27301040000002, category: "culinary", price: "Rp25.000 – Rp55.000", hours: "10.00 – 22.00 WITA" },
-            { id: 28, name: "Rumah Makan Keker Sukarara", lat: -8.70407447616235, lng: 116.20726299999995, category: "culinary", price: "Rp20.000 – Rp45.000", hours: "09.00 – 21.00 WITA" },
-            { id: 29, name: "Ayam Merangkat Bonjeruk", lat: -8.648349580218078, lng: 116.2120143441786, category: "culinary", price: "Rp20.000 – Rp40.000", hours: "09.00 – 21.00 WITA" },
-            { id: 30, name: "Lesehan Dusun Semilir", lat: -8.64528609559051, lng: 116.2297135558214, category: "culinary", price: "Rp20.000 – Rp50.000", hours: "10.00 – 22.00 WITA" },
-            { id: 31, name: "Lesehan Asri", lat: -8.707179441990714, lng: 116.28063647116429, category: "culinary", price: "Rp25.000 – Rp50.000", hours: "09.00 – 22.00 WITA" },
-            { id: 32, name: "Pawon 21 Bonjeruk", lat: -8.642559770361158, lng: 116.22520725582137, category: "culinary", price: "Rp20.000 – Rp45.000", hours: "09.00 – 21.00 WITA" },
-            { id: 33, name: "Dapur Sasak Restaurant", lat: -8.793196252185357, lng: 116.28650495952147, category: "culinary", price: "Rp25.000 – Rp60.000", hours: "10.00 – 22.00 WITA" },
-            { id: 34, name: "Nasi Balap Puyung RM Cahaya", lat: -8.75685022271295, lng: 116.25463534417862, category: "culinary", price: "Rp20.000 – Rp35.000", hours: "07.00 – 21.00 WITA" },
-            { id: 35, name: "Gulas Garden", lat: -8.889391501125413, lng: 116.28192375767145, category: "culinary", price: "Rp40.000 – Rp100.000", hours: "10.00 – 22.00 WITA" },
-            { id: 36, name: "El Bazar Cafe & Restaurant", lat: -8.89038140211371, lng: 116.27689611534288, category: "culinary", price: "Rp45.000 – Rp120.000", hours: "10.00 – 22.00 WITA" },
-            { id: 37, name: "Kenza Cafe & Restaurant Kuta Lombok", lat: -8.89093020209263, lng: 116.27702508650712, category: "culinary", price: "Rp40.000 – Rp100.000", hours: "08.00 – 22.00 WITA" },
-            { id: 38, name: "Ashtari Lombok", lat: -8.882465997129817, lng: 116.2646255, category: "culinary", price: "Rp50.000 – Rp150.000", hours: "08.00 – 22.00 WITA" },
-            { id: 39, name: "Keker Taliwang & Grilled Seafood", lat: -8.871751688422663, lng: 116.27974058835721, category: "culinary", price: "Rp30.000 – Rp80.000", hours: "10.00 – 22.00 WITA" },
-            { id: 40, name: "TANAH Restaurant", lat: -8.88793579990908, lng: 116.2726746153429, category: "culinary", price: "Rp60.000 – Rp150.000", hours: "10.00 – 22.00 WITA" },
-            { id: 41, name: "L'Olivier Restaurant", lat: -8.886813999259852, lng: 116.27584768650716, category: "culinary", price: "Rp50.000 – Rp130.000", hours: "10.00 – 22.00 WITA" },
-            { id: 42, name: "Waroeng Sulawesi", lat: -8.875847491671921, lng: 116.2765393441786, category: "culinary", price: "Rp25.000 – Rp50.000", hours: "09.00 – 21.00 WITA" },
-            { id: 43, name: "Mie Rampok Lombok Praya", lat: -8.702907717788763, lng: 116.2645414, category: "culinary", price: "Rp25.000 – Rp45.000", hours: "10.00 – 21.00 WITA" },
-            { id: 44, name: "Puri Boga", lat: -8.696188159934454, lng: 116.27051888835719, category: "culinary", price: "Rp30.000 – Rp60.000", hours: "10.00 – 21.00 WITA" },
-            { id: 45, name: "Nurina bebek", lat: -8.698662872559677, lng: 116.26393028465712, category: "culinary", price: "Rp25.000 – Rp55.000", hours: "09.00 – 21.00 WITA" },
-            { id: 46, name: "Bale Beleq Pejanggik", lat: -8.748497625916904, lng: 116.32823816595042, category: "culture", price: "Rp5.000", hours: "07.00 – 17.00 WITA" },
-            { id: 47, name: "Sade Village", lat: -8.839133276668301, lng: 116.29199782883573, category: "culture", price: "Rp10.000", hours: "07.00 – 18.00 WITA" },
-            { id: 48, name: "Masjid Kuno Rembitan", lat: -8.829264256739693, lng: 116.29443494417862, category: "culture", price: "Gratis", hours: "06.00 – 18.00 WITA" },
-            { id: 49, name: "Makam Wali Nyato", lat: -8.835734473545813, lng: 116.31102033068576, category: "culture", price: "Gratis", hours: "06.00 – 18.00 WITA" },
-            { id: 50, name: "Masjid Kuno Gunung Pujut", lat: -8.809664164958686, lng: 116.29935508465712, category: "culture", price: "Gratis", hours: "06.00 – 18.00 WITA" },
-            { id: 51, name: "Makam Datoq Lopan", lat: -8.664349911437693, lng: 116.3236703153429, category: "culture", price: "Gratis", hours: "06.00 – 18.00 WITA" },
-
-            // Destinasi Lombok Barat (52-90)
-            { id: 52, name: "Wisata Kuliner Kebon Ayu", lat: -8.692697146239661, lng: 116.1046887153429, category: "culinary", price: "Rp5.000 – Rp15.000", hours: "07.00 – 18.00 WITA" },
-            { id: 53, name: "Warung Makan Aduh Enak'e", lat: -8.70706809888388, lng: 116.08208532698565, category: "culinary", price: "Rp10.000 – Rp25.000", hours: "24 jam" },
-            { id: 54, name: "Dapur Ina Senggigi", lat: -8.49450214940243, lng: 116.05189515767144, category: "culinary", price: "Rp15.000 – Rp40.000", hours: "10.00 – 22.00 WITA" },
-            { id: 55, name: "Lesehan Ayang Asri & Coffee Shop", lat: -8.567352967604123, lng: 116.16036865767144, category: "culinary", price: "Rp10.000 – Rp35.000", hours: "09.00 – 23.00 WITA" },
-            { id: 56, name: "Lesehan Taufik 2", lat: -8.555862021717363, lng: 116.23038107116427, category: "culinary", price: "Rp10.000 – Rp30.000", hours: "09.00 – 22.00 WITA" },
-            { id: 57, name: "Sate Bulayak Suranadi", lat: -8.569993614667101, lng: 116.2318851, category: "culinary", price: "Rp10.000 – Rp20.000", hours: "08.00 – 18.00 WITA" },
-            { id: 58, name: "Sukma Rasa Outlet 3 Bebek Merseng", lat: -8.625573654045244, lng: 116.1261464153429, category: "culinary", price: "Rp12.000 – Rp35.000", hours: "09.00 – 21.00 WITA" },
-            { id: 59, name: "Taman Langit Lombok", lat: -8.514831640927566, lng: 116.09171074232856, category: "nature", price: "Rp10.000 – Rp20.000", hours: "07.00 – 18.00 WITA" },
-            { id: 60, name: "Taman Hutan Raya Nuraksa", lat: -8.520112234091549, lng: 116.28307948465711, category: "nature", price: "Rp5.000 – Rp10.000", hours: "08.00 – 17.00 WITA" },
-            { id: 61, name: "Wisata gunung Aur", lat: -8.573589007787138, lng: 116.26399878650716, category: "mountain", price: "Rp5.000 – Rp10.000", hours: "24 Jam" },
-            { id: 62, name: "Wisata Alam Desa Sesaot", lat: -8.53974832824239, lng: 116.24414784232854, category: "nature", price: "Rp5.000 – Rp15.000", hours: "08.00 – 17.00 WITA" },
-            { id: 63, name: "Air Terjun Timponan", lat: -8.503642155093837, lng: 116.21263724232853, category: "waterfall", price: "Rp5.000 – Rp10.000", hours: "08.00 – 17.00 WITA" },
-            { id: 64, name: "Wisata Berugak Elen Sesaot", lat: -8.542289149800954, lng: 116.24296084232854, category: "nature", price: "Rp5.000 – Rp10.000", hours: "08.00 – 17.00 WITA" },
-            { id: 65, name: "Bunut Ngengkang Attraction", lat: -8.53328349312879, lng: 116.24499095767142, category: "nature", price: "Rp5.000 – Rp10.000", hours: "08.00 – 17.00 WITA" },
-            { id: 66, name: "Tibu Atas Waterfall", lat: -8.540201958186888, lng: 116.2296197, category: "waterfall", price: "Rp5.000 – Rp10.000", hours: "08.00 – 17.00 WITA" },
-            { id: 67, name: "Pantai Goa Landak", lat: -8.71965422997723, lng: 116.03427927116427, category: "beach", price: "Rp5.000 – Rp10.000", hours: "24 Jam" },
-            { id: 68, name: "Bangko Bangko", lat: -8.726097990846995, lng: 115.85769381534288, category: "beach", price: "Rp10.000 – Rp20.000", hours: "24 Jam" },
-            { id: 69, name: "Bukit Tembere", lat: -8.523102439632634, lng: 116.10784231349281, category: "mountain", price: "Rp5.000 – Rp10.000", hours: "24 Jam" },
-            { id: 70, name: "Nambung Beach", lat: -8.86888698474294, lng: 116.10388144417863, category: "beach", price: "Rp5.000 – Rp15.000", hours: "24 Jam" },
-            { id: 71, name: "Buwun Mas Hills", lat: -8.842429362455448, lng: 116.0366394730143, category: "mountain", price: "Rp10.000 – Rp20.000", hours: "07.00 – 18.00 WITA" },
-            { id: 72, name: "Pantai Elak Elak", lat: -8.730293425310316, lng: 115.96626768650717, category: "beach", price: "Rp5.000 – Rp10.000", hours: "24 Jam" },
-            { id: 73, name: "Suranadi Nature Recreation Park", lat: -8.569315332782406, lng: 116.2323478, category: "nature", price: "Rp10.000 – Rp20.000", hours: "08.00 – 18.00 WITA" },
-            { id: 74, name: "Wisata Alam Goa Lawah Lebah Sempage", lat: -8.53954340716502, lng: 116.2767691883572, category: "nature", price: "Rp5.000 – Rp10.000", hours: "08.00 – 17.00 WITA" },
-            { id: 75, name: "Bukit Korea Dopang", lat: -8.523063898238123, lng: 116.12813931349281, category: "mountain", price: "Rp5.000 – Rp10.000", hours: "24 Jam" },
-            { id: 76, name: "Pantai Cemare Lembar", lat: -8.720535106333775, lng: 116.0582094, category: "beach", price: "Rp5.000 – Rp10.000", hours: "24 Jam" },
-            { id: 77, name: "Pantai Kuranji", lat: -8.633561929394292, lng: 116.07231882698565, category: "beach", price: "Rp5.000 – Rp10.000", hours: "24 Jam" },
-            { id: 78, name: "Air Terjun Segenter Pengkoaq", lat: -8.499392463446032, lng: 116.29326047116427, category: "waterfall", price: "Rp5.000 – Rp10.000", hours: "08.00 – 17.00 WITA" },
-            { id: 79, name: "Gili Nanggu", lat: -8.716695950204683, lng: 116.00820455397135, category: "beach", price: "Rp30.000 – Rp50.000", hours: "06.00 – 18.00 WITA" },
-            { id: 80, name: "Gili Bedis", lat: -8.730133201433022, lng: 116.02559851534289, category: "beach", price: "Rp10.000 – Rp20.000", hours: "06.00 – 18.00 WITA" },
-            { id: 81, name: "Desert Point", lat: -8.727193233081797, lng: 115.84025317116428, category: "beach", price: "Rp5.000 – Rp10.000", hours: "24 Jam" },
-            { id: 82, name: "Senggigi Beach", lat: -8.497833233191564, lng: 116.04538583068577, category: "beach", price: "Rp10.000 – Rp20.000", hours: "24 Jam" },
-            { id: 83, name: "Pantai Karang Bangket", lat: -8.64893919658469, lng: 116.0697436, category: "beach", price: "Rp5.000 – Rp10.000", hours: "24 Jam" },
-            { id: 84, name: "Pantai Loang Baloq", lat: -8.602575101208586, lng: 116.07367736931423, category: "beach", price: "Rp5.000 – Rp10.000", hours: "24 Jam" },
-            { id: 85, name: "Taman Narmada", lat: -8.595953737851895, lng: 116.20420524232856, category: "culture", price: "Rp10.000 – Rp20.000", hours: "08.00 – 17.00 WITA" },
-            { id: 86, name: "Pura Batu Bolong", lat: -8.509036469187816, lng: 116.05702620000001, category: "culture", price: "Rp10.000 – Rp20.000", hours: "07.00 – 19.00 WITA" },
-            { id: 87, name: "Makam Batu Layar", lat: -8.511455564341714, lng: 116.06004601360661, category: "culture", price: "Gratis – Rp5.000", hours: "07.00 – 19.00 WITA" },
-            { id: 88, name: "Pura Lingsar", lat: -8.575917936730923, lng: 116.18104004238744, category: "culture", price: "Rp10.000 – Rp20.000", hours: "08.00 – 18.00 WITA" },
-            { id: 89, name: "Desa Wisata Sesaot", lat: -8.540061311246552, lng: 116.2441692941674, category: "culture", price: "Rp5.000 – Rp15.000", hours: "08.00 – 17.00 WITA" },
-            { id: 90, name: "Rumah Adat Karang Bayan", lat: -8.55751289147416, lng: 116.18797775183907, category: "culture", price: "Rp5.000 – Rp15.000", hours: "08.00 – 17.00 WITA" },
-
-            // Destinasi Lombok Timur (91-117)
-            { id: 91, name: "Gunung Rinjani", lat: -8.411316276862003, lng: 116.45726296931424, category: "mountain", price: "Rp150.000 – Rp200.000", hours: "24 Jam" },
-            { id: 92, name: "Pantai Pink (Pantai Tangsi)", lat: -8.859647802064964, lng: 116.5803302, category: "beach", price: "Rp50.000", hours: "24 Jam" },
-            { id: 93, name: "Bukit Selong", lat: -8.36527950734418, lng: 116.54003440000001, category: "mountain", price: "Rp10.000 – Rp20.000", hours: "05.00 – 18.00 WITA" },
-            { id: 94, name: "Air Terjun Jeruk Manis", lat: -8.515431670392651, lng: 116.42403412300251, category: "waterfall", price: "Rp10.000 – Rp15.000", hours: "08:00 – 17:00 WITA" },
-            { id: 95, name: "Pantai Ekas", lat: -8.873660286739067, lng: 116.45507533404901, category: "beach", price: "-", hours: "24 Jam" },
-            { id: 96, name: "Gili Sunut", lat: -8.853141499493454, lng: 116.55001219999998, category: "beach", price: "Rp300.000 – Rp500.000", hours: "24 Jam" },
-            { id: 97, name: "Gili Kondo", lat: -8.440457641729422, lng: 116.73815139348638, category: "beach", price: "-", hours: "24 Jam" },
-            { id: 98, name: "Gili Kapal", lat: -8.444109312117726, lng: 116.74862207149708, category: "beach", price: "Gratis", hours: "24 Jam" },
-            { id: 99, name: "Gili Petagan", lat: -8.424296989782993, lng: 116.74743410800791, category: "beach", price: "Gratis", hours: "24 Jam" },
-            { id: 100, name: "Pantai Tanjung Bloam", lat: -8.87923629961025, lng: 116.57020292883571, category: "beach", price: "Rp10.000", hours: "24 Jam" },
-            { id: 101, name: "Bukit Anak Dara", lat: -8.364030199605475, lng: 116.56060281988832, category: "mountain", price: "Rp10.000 – Rp15.000", hours: "07.00 – 17.00 WITA" },
-            { id: 102, name: "Bukit Pergasingan", lat: -8.345318062928726, lng: 116.53304919971514, category: "mountain", price: "Rp15.000", hours: "24 Jam" },
-            { id: 103, name: "Air Terjun Mayung Polak", lat: -8.508344812910652, lng: 116.44201879886063, category: "waterfall", price: "Rp10.000", hours: "08.00 – 17.00 WITA" },
-            { id: 104, name: "Air Terjun Mangku Sakti", lat: -8.314453082623029, lng: 116.46970232518238, category: "waterfall", price: "Rp5.000 – Rp10.000", hours: "07.00 – 17.00 WITA" },
-            { id: 105, name: "Telaga Biru", lat: -8.54148517540629, lng: 116.39053557116428, category: "nature", price: "Gratis", hours: "07.00 – 17.00 WITA" },
-            { id: 106, name: "Air Terjun Pengkelep", lat: -8.544710695125977, lng: 116.3857575, category: "waterfall", price: "Rp20.000", hours: "24 Jam" },
-            { id: 107, name: "Tereng Wilis Waterfall", lat: -8.54309900489652, lng: 116.38470265767144, category: "waterfall", price: "Rp5.000 – Rp15.000", hours: "07.00 – 17.00 WITA" },
-            { id: 108, name: "Air Terjun Aik Ngemplok", lat: -8.525892005135598, lng: 116.38714952883574, category: "waterfall", price: "Rp5.000 – Rp15.000", hours: "07.00 – 17.00 WITA" },
-            { id: 109, name: "Tetebatu Waterfall", lat: -8.539920475297503, lng: 116.42151399999999, category: "waterfall", price: "Rp10.000 – Rp15.000", hours: "07.00 – 17.00 WITA" },
-            { id: 110, name: "Tereng Wilis Camping Ground", lat: -8.538510295039742, lng: 116.38447235767143, category: "nature", price: "-", hours: "07.00 – 17.00 WITA" },
-            { id: 111, name: "Rumah Adat Desa Bleq Sembalun Lawang", lat: -8.364137677921235, lng: 116.53943550000001, category: "culture", price: "Rp5.000 – Rp20.000", hours: "24 Jam" },
-            { id: 112, name: "Goa Raksasa Tanjung Ringgit", lat: -8.860181950637527, lng: 116.5931953199914, category: "nature", price: "Rp5.000", hours: "06.00 – 17.00 WITA" },
-            { id: 113, name: "Pusat Kuliner Ikan Segar", lat: -8.700152359175457, lng: 116.57103065243587, category: "culinary", price: "Rp50.000 – Rp75.000", hours: "07.00 – 21.00 WITA" },
-            { id: 114, name: "Lesehan Purnama", lat: -8.610815125135478, lng: 116.48004041092116, category: "culinary", price: "Rp20.000 – Rp70.000", hours: "13.00 – 21.00 WITA" },
-            { id: 115, name: "Lesehan Mae Cenggo", lat: -8.615442316408275, lng: 116.49104823123876, category: "culinary", price: "-", hours: "13.00 – 21.00 WITA" },
-            { id: 116, name: "Makam Raja Selaparang", lat: -8.546794891484526, lng: 116.60019033649598, category: "culture", price: "Gratis", hours: "13.00 – 17.00 WITA" },
-            { id: 117, name: "Pura Medana", lat: -8.35906886487244, lng: 116.1229244634781, category: "culture", price: "-", hours: "-" },
-
-            // Destinasi Lombok Utara (118-147)
-            { id: 118, name: "Masjid Kuno Desa Sesait", lat: -8.296404197621191, lng: 116.27242310164911, category: "culture", price: "-", hours: "-" },
-            { id: 119, name: "Masjid Kuno Bayan Beleq", lat: -8.266589635517171, lng: 116.42707919231214, category: "culture", price: "-", hours: "-" },
-            { id: 120, name: "Kubur Beleq", lat: -8.293552192320321, lng: 116.27078449999999, category: "culture", price: "-", hours: "-" },
-            { id: 121, name: "Air Terjun Sendang Gile", lat: -8.306161577809489, lng: 116.40829868465711, category: "waterfall", price: "-", hours: "-" },
-            { id: 122, name: "Gili Air", lat: -8.358851802356646, lng: 116.08136100358664, category: "beach", price: "-", hours: "-" },
-            { id: 123, name: "Gili Trawangan", lat: -8.348218868186132, lng: 116.0373270744556, category: "beach", price: "-", hours: "-" },
-            { id: 124, name: "Gili Meno", lat: -8.34652438698581, lng: 116.05598851140081, category: "beach", price: "-", hours: "-" },
-            { id: 125, name: "Pantai Sire", lat: -8.366108662011014, lng: 116.11255, category: "beach", price: "-", hours: "-" },
-            { id: 126, name: "Air terjun Kerta Gangga", lat: -8.35089534722242, lng: 116.22648755767143, category: "waterfall", price: "-", hours: "-" },
-            { id: 127, name: "Bukit Malimbu", lat: -8.441577107736848, lng: 116.0662837851991, category: "mountain", price: "-", hours: "-" },
-            { id: 128, name: "Klui Beach", lat: -8.465531174997066, lng: 116.03689083412524, category: "beach", price: "-", hours: "-" },
-            { id: 129, name: "Tiu Pupus", lat: -8.33970294615779, lng: 116.21872517116428, category: "waterfall", price: "-", hours: "-" },
-            { id: 130, name: "Air Terjun Tiu Pituq", lat: -8.340138176659204, lng: 116.22075292111545, category: "waterfall", price: "-", hours: "-" },
-            { id: 131, name: "Tiu Kelep Waterfall", lat: -8.312684111362854, lng: 116.40411089999998, category: "waterfall", price: "-", hours: "-" },
-            { id: 132, name: "Pandanan Beach", lat: -8.419543159554685, lng: 116.05017079999999, category: "beach", price: "-", hours: "-" },
-            { id: 133, name: "Bukit Malaka Pandanan", lat: -8.422514845635053, lng: 116.04467763591038, category: "mountain", price: "-", hours: "-" },
-            { id: 134, name: "Pantai Vulkanik Nipah, Malaka", lat: -8.42578367394725, lng: 116.04708089511173, category: "beach", price: "-", hours: "-" },
-            { id: 135, name: "Nipah Beach", lat: -8.433147716895293, lng: 116.04579363398187, category: "beach", price: "-", hours: "-" },
-            { id: 136, name: "Batu Bolong", lat: -8.435781143794092, lng: 116.03588999145522, category: "beach", price: "-", hours: "-" },
-            { id: 137, name: "Air Terjun Mangku Kodeq", lat: -8.287936019730012, lng: 116.47062774163027, category: "waterfall", price: "-", hours: "-" },
-            { id: 138, name: "Air Terjun Kalianjah Sambik Elen", lat: -8.2946028150166, lng: 116.46951414533923, category: "waterfall", price: "-", hours: "-" },
-            { id: 139, name: "Pantai Impos", lat: -8.360196807413386, lng: 116.13607362883573, category: "beach", price: "-", hours: "-" },
-            { id: 140, name: "Masjid Kuno Bayan Beleq", lat: -8.266589635517171, lng: 116.42707919231214, category: "culture", price: "-", hours: "-" },
-            { id: 141, name: "Desa Adat Senaru", lat: -8.302492911506782, lng: 116.40100614232854, category: "culture", price: "-", hours: "-" },
-            { id: 142, name: "Angkringan Balap Tanjung", lat: -8.365507205177387, lng: 116.13239074881179, category: "culinary", price: "-", hours: "-" },
-            { id: 143, name: "Sate Ikan SARI RASA Khas Tanjung", lat: -8.362641799625923, lng: 116.14032851058681, category: "culinary", price: "-", hours: "-" },
-            { id: 144, name: "Lesehan SASAK NARMADA", lat: -8.361474405912187, lng: 116.17218682573127, category: "culinary", price: "-", hours: "-" },
-            { id: 145, name: "Bely Garden", lat: -8.360593481013215, lng: 116.1740996735024, category: "culinary", price: "-", hours: "-" },
-            { id: 146, name: "Ya Ya Warung", lat: -8.348778072939272, lng: 116.061250007674, category: "culinary", price: "-", hours: "-" },
-            { id: 147, name: "Aloha Warung", lat: -8.346448933032702, lng: 116.06093978002858, category: "culinary", price: "-", hours: "-" },
-
-            // Destinasi Mataram (148-170)
-            { id: 148, name: "Pantai Gading Mapak", lat: -8.61859395390315, lng: 116.07514090000001, category: "beach", price: "-", hours: "-" },
-            { id: 149, name: "Pantai Batas Senja Dua", lat: -8.622517388639968, lng: 116.07478, category: "beach", price: "-", hours: "-" },
-            { id: 150, name: "Pantai Ampenan", lat: -8.569375768122388, lng: 116.07197031534291, category: "beach", price: "-", hours: "-" },
-            { id: 151, name: "Museum Negeri Nusa Tenggara Barat", lat: -8.585052369820982, lng: 116.08588132883571, category: "culture", price: "-", hours: "-" },
-            { id: 152, name: "Taman Mayura", lat: -8.586810187139392, lng: 116.1330549, category: "culture", price: "-", hours: "-" },
-            { id: 153, name: "Taman Budaya Provinsi NTB", lat: -8.593825832516712, lng: 116.09966786930146, category: "culture", price: "-", hours: "-" },
-            { id: 154, name: "Kota Tua Ampenan", lat: -8.570716561594645, lng: 116.07624545277966, category: "culture", price: "-", hours: "-" },
-            { id: 155, name: "Masjid Raya Hubbul Wathan - Islamic Center NTB", lat: -8.579961720568198, lng: 116.10061073874492, category: "culture", price: "-", hours: "-" },
-            { id: 156, name: "Pura Meru Cakranegara", lat: -8.58761538289387, lng: 116.13138626533252, category: "culture", price: "-", hours: "-" },
-            { id: 157, name: "Rumah Makan Khas Lombok Tanjung Karang", lat: -8.596699712446284, lng: 116.0759605, category: "culinary", price: "-", hours: "-" },
-            { id: 158, name: "Taliwang Khas Pak Udin", lat: -8.586781687138199, lng: 116.1282777, category: "culinary", price: "-", hours: "-" },
-            { id: 159, name: "Sate Rembiga Ibu Sinnaseh", lat: -8.561454991470393, lng: 116.10942126533209, category: "culinary", price: "-", hours: "-" },
-            { id: 160, name: "Roemah Langko", lat: -8.576986791455388, lng: 116.08379899416799, category: "culinary", price: "-", hours: "-" },
-            { id: 161, name: "Taliwang Irama 3", lat: -8.577931095588989, lng: 116.12554899999999, category: "culinary", price: "-", hours: "-" },
-            { id: 162, name: "Lesehan Green Asri", lat: -8.570320586448515, lng: 116.1425504, category: "culinary", price: "-", hours: "-" },
-            { id: 163, name: "Bebek Pondok Galih", lat: -8.560650895347925, lng: 116.10756409999998, category: "culinary", price: "-", hours: "-" },
-            { id: 164, name: "Lesehan Taliwang Nada", lat: -8.568148113643057, lng: 116.1390723, category: "culinary", price: "-", hours: "-" },
-            { id: 165, name: "Lesehan Dapur Selaparang Lombok", lat: -8.560861004649217, lng: 116.10680807116427, category: "culinary", price: "-", hours: "-" },
-            { id: 166, name: "Seafood Ikan Bakar 99", lat: -8.590421795763545, lng: 116.12489394232855, category: "culinary", price: "-", hours: "-" },
-            { id: 167, name: "Rumah Makan Taliwang Kania", lat: -8.589294587243591, lng: 116.12506789999999, category: "culinary", price: "-", hours: "-" },
-            { id: 168, name: "Dapoer Sasak Restaurant", lat: -8.570642422564813, lng: 116.10234410000001, category: "culinary", price: "-", hours: "-" },
-            { id: 169, name: "Taliwang Alam Nyaman Kebon Roek", lat: -8.565834504579877, lng: 116.0813197, category: "culinary", price: "-", hours: "-" },
-            { id: 170, name: "Padi Food Center", lat: -8.59255277896755, lng: 116.0959602, category: "culinary", price: "-", hours: "-" }
-        ];
-
-        // ==================== PREMIUM INITIALIZATION ====================
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeParticles();
-            initializeTheme();
-            initializeNavigation();
-            initializeDestinations();
-            initializeMap();
-            initializeReviewSystem();
-            initializeWeatherWidget();
-        });
-
-        // ==================== PREMIUM PARTICLE BACKGROUND ====================
-        function initializeParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 30;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                
-                // Random properties
-                const size = Math.random() * 6 + 2;
-                const posX = Math.random() * 100;
-                const posY = Math.random() * 100;
-                const delay = Math.random() * 5;
-                const duration = Math.random() * 10 + 10;
-                
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${posX}%`;
-                particle.style.top = `${posY}%`;
-                particle.style.animationDelay = `${delay}s`;
-                particle.style.animationDuration = `${duration}s`;
-                particle.style.background = `var(--${['turquoise', 'emerald', 'gold'][Math.floor(Math.random() * 3)]})`;
-                particle.style.opacity = Math.random() * 0.4 + 0.1;
-                
-                particlesContainer.appendChild(particle);
-            }
-        }
-
-        // ==================== PREMIUM THEME SYSTEM ====================
-        function initializeTheme() {
-            const themeToggle = document.getElementById('themeToggle');
-            const body = document.body;
-
-            const savedTheme = localStorage.getItem('lombok-theme') || 
-                              (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-            body.setAttribute('data-theme', savedTheme);
-            updateThemeIcon(savedTheme);
-
-            themeToggle.addEventListener('click', () => {
-                const currentTheme = body.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                
-                body.setAttribute('data-theme', newTheme);
-                localStorage.setItem('lombok-theme', newTheme);
-                updateThemeIcon(newTheme);
-                
-                // Add transition effect
-                body.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-                setTimeout(() => {
-                    body.style.transition = '';
-                }, 400);
-            });
-
-            function updateThemeIcon(theme) {
-                const icon = themeToggle.querySelector('i');
-                if (theme === 'dark') {
-                    icon.className = 'fas fa-sun';
-                } else {
-                    icon.className = 'fas fa-moon';
-                }
-            }
-        }
-
-        // ==================== PREMIUM NAVIGATION ====================
-        function initializeNavigation() {
-            const hamburger = document.querySelector('.hamburger');
-            const navLinks = document.querySelector('.nav-links');
-
-            hamburger.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-                hamburger.innerHTML = navLinks.classList.contains('active') ? 
-                    '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
-            });
-
-            // Header scroll effect
-            window.addEventListener('scroll', () => {
-                const header = document.getElementById('header');
-                if (window.scrollY > 100) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            });
-
-            // Smooth scroll for navigation links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                        // Close mobile menu if open
-                        navLinks.classList.remove('active');
-                        hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-                    }
-                });
-            });
-        }
-
-        // ==================== PREMIUM DESTINATIONS DISPLAY ====================
-        async function initializeDestinations() {
-            const destinationGrid = document.getElementById('destination-grid');
-            
-            // Show loading
-            destinationGrid.innerHTML = `
-                <div class="loading-destinations" style="text-align: center; padding: 60px; grid-column: 1/-1;">
-                    <div class="loading" style="width: 40px; height: 40px; border-width: 4px; margin: 0 auto 20px;"></div>
-                    <p style="color: var(--text-secondary);">Loading amazing destinations...</p>
-                </div>
-            `;
-
-            const destinations = await loadLombokDestinations();
-            
-            // Clear loading
-            destinationGrid.innerHTML = '';
-            
-            destinations.forEach((dest, index) => {
-                const card = createDestinationCard(dest, index);
-                destinationGrid.appendChild(card);
-            });
-
-            // Initialize scroll animations
-            initializeScrollAnimations();
-            
-            // Update dropdowns
-            updateDestinationDropdowns(destinations);
-        }
-
-        function loadLombokDestinations() {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(lombokDestinations);
-                }, 1000);
-            });
-        }
-
-        function createDestinationCard(destination, index) {
-            const card = document.createElement('div');
-            card.className = 'destination-card animate-on-scroll';
-            card.style.animationDelay = `${index * 0.1}s`;
-            card.setAttribute('data-location', `${destination.lat},${destination.lng}`);
-            card.setAttribute('data-name', destination.name);
-            
-            const categoryColors = {
-                'beach': '#1abc9c',
-                'mountain': '#e74c3c',
-                'waterfall': '#3498db',
-                'nature': '#27ae60',
-                'culture': '#9b59b6',
-                'culinary': '#f39c12'
-            };
-            
-            const color = categoryColors[destination.category] || '#95a5a6';
-            
-            card.innerHTML = `
-                <div class="destination-image">
-                    <img src="https://images.unsplash.com/photo-1559661175-2db6a6d82f20?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="${destination.name}" loading="lazy">
-                    <div style="position: absolute; top: 16px; right: 16px; background: ${color}; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.9rem;">
-                        ${destination.category}
-                    </div>
-                </div>
-                <div class="destination-info">
-                    <h3>${destination.name}</h3>
-                    <p>Destinasi wisata ${destination.category} yang menakjubkan di Lombok. Nikmati pengalaman tak terlupakan dengan pemandangan alam yang memukau.</p>
-                    
-                    <div class="destination-meta">
-                        <div class="rating">
-                            <div class="stars" style="color: var(--gold);">★★★★☆</div>
-                        </div>
-                        <div class="price">${destination.price}</div>
-                    </div>
-                    
-                    <div style="margin: 16px 0;">
-                        <span style="display: inline-block; background: var(--glass); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; margin: 2px;">${destination.category}</span>
-                        <span style="display: inline-block; background: var(--glass); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; margin: 2px;">Lombok</span>
-                    </div>
-                    
-                    <div class="destination-details">
-                        <div class="detail-item">
-                            <i class="fas fa-clock"></i>
-                            <span>${destination.hours}</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-tag"></i>
-                            <span>${destination.category}</span>
-                        </div>
-                    </div>
-                    
-                    <button class="btn btn-small view-on-map" style="margin-top: 20px; width: 100%;">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>View on Map & Directions</span>
-                    </button>
-                </div>
-            `;
-            
-            return card;
-        }
-
-        function updateDestinationDropdowns(destinations) {
-            const mapDropdown = document.getElementById('destination');
-            const reviewDropdown = document.getElementById('destination-select');
-            
-            // Clear existing options except first one
-            while (mapDropdown.children.length > 1) mapDropdown.removeChild(mapDropdown.lastChild);
-            while (reviewDropdown.children.length > 1) reviewDropdown.removeChild(reviewDropdown.lastChild);
-            
-            destinations.forEach(dest => {
-                const mapOption = document.createElement('option');
-                mapOption.value = `${dest.lat},${dest.lng}`;
-                mapOption.textContent = dest.name;
-                mapDropdown.appendChild(mapOption);
-                
-                const reviewOption = document.createElement('option');
-                reviewOption.value = dest.name;
-                reviewOption.textContent = dest.name;
-                reviewDropdown.appendChild(reviewOption);
-            });
-        }
-
-        // ==================== PREMIUM MAP SYSTEM ====================
-        let map, routingControl, userLocation, userMarker;
-
-        async function initializeMap() {
-            // Initialize map dengan view Lombok
-            map = L.map('map', {
-                zoomControl: false,
-                attributionControl: false
-            }).setView([-8.6500, 116.3167], 9);
-            
-            // Premium map tiles
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '© OpenStreetMap, © CartoDB',
-                subdomains: 'abcd',
-                maxZoom: 20
-            }).addTo(map);
-            
-            // Custom zoom control
-            L.control.zoom({
-                position: 'bottomright'
-            }).addTo(map);
-            
-            // Load semua destinasi Lombok
-            const destinations = lombokDestinations;
-            addLombokMarkers(destinations);
-            
-            // Initialize routing
-            routingControl = L.Routing.control({
-                waypoints: [],
-                routeWhileDragging: false,
-                showAlternatives: false,
-                lineOptions: {
-                    styles: [
-                        {color: '#1abc9c', opacity: 0.8, weight: 6}
-                    ]
-                },
-                createMarker: function() { return null; },
-                show: false,
-                autoRoute: true,
-                fitSelectedRoutes: true
-            }).addTo(map);
-            
-            routingControl.getContainer().style.display = 'none';
-            
-            setupMapEventListeners();
-            updateDestinationDropdowns(destinations);
-        }
-
-        function addLombokMarkers(destinations) {
-            const categoryColors = {
-                'beach': '#1abc9c',
-                'mountain': '#e74c3c', 
-                'waterfall': '#3498db',
-                'nature': '#27ae60',
-                'culture': '#9b59b6',
-                'culinary': '#f39c12'
-            };
-
-            const categoryIcons = {
-                'beach': 'umbrella-beach',
-                'mountain': 'mountain',
-                'waterfall': 'water',
-                'nature': 'tree',
-                'culture': 'landmark',
-                'culinary': 'utensils'
-            };
-
-            destinations.forEach(dest => {
-                const color = categoryColors[dest.category] || '#95a5a6';
-                const iconName = categoryIcons[dest.category] || 'map-marker-alt';
-                
-                const customIcon = L.divIcon({
-                    html: `
-                        <div style="background: ${color}; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; border: 3px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; transition: all 0.3s ease;">
-                            <i class="fas fa-${iconName}"></i>
-                        </div>
-                    `,
-                    className: 'lombok-marker',
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 40]
-                });
-                
-                const marker = L.marker([dest.lat, dest.lng], {icon: customIcon})
-                    .addTo(map)
-                    .bindPopup(`
-                        <div style="background: var(--glass-dark); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); color: var(--text-primary); min-width: 280px; backdrop-filter: blur(20px);">
-                            <h3 style="margin: 0 0 12px 0; color: ${color}; font-size: 1.3rem;">${dest.name}</h3>
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-                                <i class="fas fa-${iconName}" style="color: ${color};"></i>
-                                <span style="text-transform: capitalize; color: var(--text-secondary);">${dest.category}</span>
-                            </div>
-                            ${dest.price && dest.price !== '-' ? `<p style="margin: 8px 0; color: var(--text-secondary);"><strong>Harga:</strong> ${dest.price}</p>` : ''}
-                            ${dest.hours && dest.hours !== '-' ? `<p style="margin: 8px 0; color: var(--text-secondary);"><strong>Jam:</strong> ${dest.hours}</p>` : ''}
-                            <button class="set-destination" style="background: ${color}; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-size: 0.9rem; font-weight: 600; width: 100%; transition: all 0.3s ease; margin-top: 12px;">
-                                <i class="fas fa-route"></i> Dapatkan Petunjuk Arah
-                            </button>
-                        </div>
-                    `);
-                
-                marker.on('popupopen', function() {
-                    document.querySelector('.set-destination').addEventListener('click', function() {
-                        document.getElementById('destination').value = `${dest.lat},${dest.lng}`;
-                        calculateRoute();
-                        map.closePopup();
-                    });
-                });
-
-                // Hover effects
-                marker.on('mouseover', function() {
-                    this.getElement().style.transform = 'scale(1.2)';
-                    this.getElement().style.transition = 'transform 0.3s ease';
-                });
-
-                marker.on('mouseout', function() {
-                    this.getElement().style.transform = 'scale(1)';
-                });
-            });
-        }
-
-        function setupMapEventListeners() {
-            // Detect location
-            document.getElementById('detect-location').addEventListener('click', detectUserLocation);
-            
-            // Calculate route
-            document.getElementById('calculate-route').addEventListener('click', calculateRoute);
-            
-            // Clear route
-            document.getElementById('clear-route').addEventListener('click', clearRoute);
-            
-            // View on map buttons
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.view-on-map')) {
-                    e.preventDefault();
-                    const card = e.target.closest('.destination-card');
-                    const location = card.getAttribute('data-location');
-                    const name = card.getAttribute('data-name');
-                    
-                    document.getElementById('destination').value = location;
-                    document.getElementById('map-section').scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    
-                    const [lat, lng] = location.split(',').map(coord => parseFloat(coord));
-                    map.flyTo([lat, lng], 13, {
-                        duration: 1.5,
-                        easeLinearity: 0.25
-                    });
-                    
-                    // Show notification
-                    showNotification(`📍 ${name} selected! Set your location and click "Get Directions"`);
-                }
-            });
-        }
-
-        function detectUserLocation() {
-            const locationInput = document.getElementById('start-location');
-            const detectBtn = document.getElementById('detect-location');
-            
-            locationInput.value = '🕵️ Detecting your location...';
-            detectBtn.innerHTML = '<div class="loading"></div>';
-            detectBtn.disabled = true;
-            
-            if (!navigator.geolocation) {
-                locationInput.value = '❌ Geolocation not supported';
-                resetDetectButton();
-                return;
-            }
-            
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    userLocation = [
-                        position.coords.latitude,
-                        position.coords.longitude
-                    ];
-                    
-                    // Remove existing user marker
-                    if (userMarker) {
-                        map.removeLayer(userMarker);
-                    }
-                    
-                    // Add premium user location marker
-                    userMarker = L.marker(userLocation, {
-                        icon: L.divIcon({
-                            html: `
-                                <div style="background: var(--gradient-primary); width: 40px; height: 40px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 25px var(--emerald); display: flex; align-items: center; justify-content: center; color: white; animation: pulse 2s infinite;">
-                                    <i class="fas fa-location-arrow"></i>
-                                </div>
-                            `,
-                            className: 'user-location-marker',
-                            iconSize: [40, 40]
-                        })
-                    }).addTo(map).bindPopup('Your Location 🎯');
-                    
-                    // Get address name (simplified)
-                    locationInput.value = `📍 Your Location (${userLocation[0].toFixed(4)}, ${userLocation[1].toFixed(4)})`;
-                    
-                    // Center map on user location
-                    map.flyTo(userLocation, 13, {
-                        duration: 1.5,
-                        easeLinearity: 0.25
-                    });
-                    
-                    resetDetectButton();
-                    showNotification('✅ Location detected successfully!');
-                },
-                function(error) {
-                    let errorMessage = '❌ Failed to detect location';
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMessage = '🚫 Location access denied';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMessage = '📡 Location unavailable';
-                            break;
-                        case error.TIMEOUT:
-                            errorMessage = '⏰ Location request timeout';
-                            break;
-                    }
-                    locationInput.value = errorMessage;
-                    resetDetectButton();
-                }
-            );
-        }
-
-        function resetDetectButton() {
-            const detectBtn = document.getElementById('detect-location');
-            detectBtn.innerHTML = '<i class="fas fa-crosshairs"></i><span>Detect My Location</span>';
-            detectBtn.disabled = false;
-        }
-
-        function calculateRoute() {
-            const destinationSelect = document.getElementById('destination');
-            const destinationCoords = destinationSelect.value.split(',');
-            
-            if (!userLocation) {
-                showNotification('❌ Please set your location first!', 'error');
-                return;
-            }
-            
-            if (destinationCoords.length !== 2) {
-                showNotification('❌ Please select a destination!', 'error');
-                return;
-            }
-            
-            const destination = [
-                parseFloat(destinationCoords[0]),
-                parseFloat(destinationCoords[1])
-            ];
-            
-            // Show routing control
-            routingControl.getContainer().style.display = 'block';
-            
-            // Set waypoints
-            routingControl.setWaypoints([
-                L.latLng(userLocation[0], userLocation[1]),
-                L.latLng(destination[0], destination[1])
-            ]);
-            
-            // Fit map to route
-            map.fitBounds(routingControl.getWaypoints(), { padding: [50, 50] });
-            
-            showNotification('🗺️ Route calculated successfully!');
-        }
-
-        function clearRoute() {
-            if (routingControl) {
-                routingControl.getContainer().style.display = 'none';
-                routingControl.setWaypoints([]);
-            }
-            showNotification('🧹 Route cleared');
-        }
-
-        // ==================== PREMIUM REVIEW SYSTEM ====================
-        let reviews = JSON.parse(localStorage.getItem('lombok-premium-reviews')) || [];
-
-        function initializeReviewSystem() {
-            // Star rating functionality
-            const stars = document.querySelectorAll('.star-rating .star');
-            const ratingValue = document.getElementById('rating-value');
-            
-            stars.forEach(star => {
-                star.addEventListener('click', function() {
-                    const rating = this.getAttribute('data-rating');
-                    ratingValue.value = rating;
-                    
-                    // Update star display
-                    stars.forEach(s => {
-                        if (s.getAttribute('data-rating') <= rating) {
-                            s.classList.add('active');
-                            s.style.color = 'var(--gold)';
-                        } else {
-                            s.classList.remove('active');
-                            s.style.color = 'var(--border-color)';
-                        }
-                    });
-                });
-                
-                // Hover effect
-                star.addEventListener('mouseover', function() {
-                    const rating = this.getAttribute('data-rating');
-                    stars.forEach(s => {
-                        if (s.getAttribute('data-rating') <= rating) {
-                            s.style.color = 'var(--gold)';
-                            s.style.transform = 'scale(1.1)';
-                        }
-                    });
-                });
-                
-                star.addEventListener('mouseout', function() {
-                    const currentRating = ratingValue.value;
-                    stars.forEach(s => {
-                        if (s.getAttribute('data-rating') > currentRating) {
-                            s.style.color = 'var(--border-color)';
-                            s.style.transform = 'scale(1)';
-                        }
-                    });
-                });
-            });
-            
-            // Review form submission
-            document.getElementById('reviewForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const name = document.getElementById('reviewer-name').value.trim();
-                const destination = document.getElementById('destination-select').value;
-                const rating = document.getElementById('rating-value').value;
-                const text = document.getElementById('review-text').value.trim();
-                
-                if (rating === '0') {
-                    showNotification('⭐ Please give a rating!', 'error');
-                    return;
-                }
-                
-                if (!name || !text) {
-                    showNotification('📝 Please fill in all fields!', 'error');
-                    return;
-                }
-                
-                const review = {
-                    id: Date.now(),
-                    name: name,
-                    destination: destination,
-                    rating: parseInt(rating),
-                    text: text,
-                    date: new Date().toLocaleDateString('en-ID', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    }),
-                    avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=1abc9c&color=fff&size=100`
-                };
-                
-                // Add review with animation
-                reviews.unshift(review);
-                saveReviews();
-                displayReviews();
-                
-                // Reset form
-                this.reset();
-                stars.forEach(star => {
-                    star.classList.remove('active');
-                    star.style.color = 'var(--border-color)';
-                });
-                ratingValue.value = '0';
-                
-                showNotification('🎉 Thank you for sharing your experience!', 'success');
-            });
-            
-            // Display existing reviews
-            displayReviews();
-        }
-
-        function saveReviews() {
-            localStorage.setItem('lombok-premium-reviews', JSON.stringify(reviews));
-        }
-
-        function displayReviews() {
-            const reviewsList = document.getElementById('reviews-list');
-            reviewsList.innerHTML = '';
-            
-            if (reviews.length === 0) {
-                reviewsList.innerHTML = `
-                    <div style="text-align: center; padding: 60px; background: var(--card-bg); border-radius: 20px; border: 1px solid var(--border-color);">
-                        <i class="fas fa-comments" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5; color: var(--turquoise);"></i>
-                        <h3 style="margin-bottom: 12px; color: var(--text-primary);">No Reviews Yet</h3>
-                        <p style="color: var(--text-secondary); margin-bottom: 0;">Be the first to share your Lombok adventure! 🌴</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            reviews.forEach((review, index) => {
-                const reviewCard = document.createElement('div');
-                reviewCard.className = 'animate-on-scroll';
-                reviewCard.style.animationDelay = `${index * 0.1}s`;
-                reviewCard.style.background = 'var(--card-bg)';
-                reviewCard.style.padding = '30px';
-                reviewCard.style.borderRadius = '20px';
-                reviewCard.style.border = '1px solid var(--border-color)';
-                reviewCard.style.marginBottom = '20px';
-                reviewCard.style.transition = 'all 0.3s ease';
-                
-                reviewCard.innerHTML = `
-                    <div style="display: flex; justify-content: between; align-items: flex-start; margin-bottom: 16px;">
-                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
-                            <img src="${review.avatar}" alt="${review.name}" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--turquoise);">
-                            <div>
-                                <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary);">${review.name}</div>
-                                <div style="color: var(--text-secondary); font-size: 0.9rem;">${review.destination}</div>
-                            </div>
-                        </div>
-                        <div style="color: var(--text-secondary); font-size: 0.9rem;">${review.date}</div>
-                    </div>
-                    <div style="color: var(--gold); font-size: 1.1rem; margin-bottom: 12px;">
-                        ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
-                    </div>
-                    <div style="color: var(--text-primary); line-height: 1.6; font-size: 1rem;">
-                        "${review.text}"
-                    </div>
-                `;
-                
-                reviewsList.appendChild(reviewCard);
-            });
-        }
-
-        // ==================== PREMIUM WEATHER WIDGET ====================
-        function initializeWeatherWidget() {
-            const refreshBtn = document.getElementById('refresh-weather');
-            
-            function updateWeather() {
-                // Simulate API call
-                refreshBtn.style.animation = 'spin 1s ease-in-out';
-                
-                setTimeout(() => {
-                    const weatherData = {
-                        temp: '28°C',
-                        condition: 'Calm',
-                        visibility: '30m'
-                    };
-                    
-                    document.getElementById('weather-temp').textContent = weatherData.temp;
-                    document.getElementById('weather-condition').textContent = weatherData.condition;
-                    document.getElementById('weather-visibility').textContent = weatherData.visibility;
-                    
-                    refreshBtn.style.animation = '';
-                    showNotification('🌤️ Weather updated!');
-                }, 1000);
-            }
-            
-            refreshBtn.addEventListener('click', updateWeather);
-        }
-
-        // ==================== PREMIUM UTILITIES ====================
-        function initializeScrollAnimations() {
-            const animateElements = document.querySelectorAll('.animate-on-scroll');
-            
-            function checkScroll() {
-                animateElements.forEach(element => {
-                    const elementTop = element.getBoundingClientRect().top;
-                    const windowHeight = window.innerHeight;
-                    
-                    if (elementTop < windowHeight - 100) {
-                        element.classList.add('animated');
-                    }
-                });
-            }
-            
-            window.addEventListener('scroll', checkScroll);
-            window.addEventListener('load', checkScroll);
-            checkScroll(); // Initial check
-        }
-
-        function showNotification(message, type = 'success') {
-            // Remove existing notification
-            const existingNotification = document.querySelector('.notification');
-            if (existingNotification) {
-                existingNotification.remove();
-            }
-            
-            const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.innerHTML = message;
-            
-            // Styling
-            notification.style.cssText = `
-                position: fixed;
-                top: 100px;
-                right: 24px;
-                background: ${type === 'error' ? 'var(--coral)' : 'var(--emerald)'};
-                color: white;
-                padding: 16px 24px;
-                border-radius: 12px;
-                z-index: 10000;
-                animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-                font-weight: 600;
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(255,255,255,0.1);
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Auto remove after 3 seconds
-            setTimeout(() => {
-                notification.style.animation = 'slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) reverse';
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }, 3000);
-        }
-
-        // Add CSS for animations
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideInRight {
-                from {
-                    opacity: 0;
-                    transform: translateX(100px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-            }
-            
-            .star-rating .star.active {
-                color: var(--gold) !important;
-                transform: scale(1.2);
-            }
-            
-            .destination-card, .feature-card, .review-card {
-                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Add sample reviews if none exist
-        if (reviews.length === 0) {
-            reviews = [
-                {
-                    id: 1,
-                    name: "Sarah Adventure",
-                    destination: "Pantai Kuta Mandalika",
-                    rating: 5,
-                    text: "Pantainya sangat indah! Pasir putih dan air yang jernih membuat pengalaman berlibur menjadi tak terlupakan. Sangat recommended!",
-                    date: "Maret 15, 2024",
-                    avatar: "https://ui-avatars.com/api/?name=Sarah+Adventure&background=1abc9c&color=fff&size=100"
-                },
-                {
-                    id: 2,
-                    name: "Alex Explorer",
-                    destination: "Gunung Rinjani",
-                    rating: 5,
-                    text: "Pendakian yang menantang tapi sangat memuaskan. Sunrise dari puncak Rinjani adalah pemandangan terindah yang pernah saya lihat!",
-                    date: "Maret 10, 2024",
-                    avatar: "https://ui-avatars.com/api/?name=Alex+Explorer&background=e74c3c&color=fff&size=100"
-                },
-                {
-                    id: 3,
-                    name: "Maya Traveler",
-                    destination: "Gili Trawangan",
-                    rating: 4,
-                    text: "Pulau yang sangat cantik! Snorkeling di sini seperti berenang di akuarium raksasa. Coral dan ikan-ikan berwarna-warni sangat menakjubkan.",
-                    date: "Februari 28, 2024",
-                    avatar: "https://ui-avatars.com/api/?name=Maya+Traveler&background=9b59b6&color=fff&size=100"
-                }
-            ];
-            saveReviews();
-        }
-    </script>
+    <!-- Our JavaScript Files -->
+    <script src="data.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
+
+
+
+
